@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { UserButton, auth } from "@clerk/nextjs";
 import Link from "next/link";
 import { LogIn } from "lucide-react";
+import FileUpload from "@/components/ui/FileUpload";
 
 export default async function Home() {
   const { userId } = await auth();
@@ -16,7 +17,7 @@ export default async function Home() {
             </h1>
             <UserButton afterSignOutUrl="/" />
           </div>
-          <div className="flex mt-2">
+          <div className="flex mt-5">
             {isAuth && <Button>Start Now</Button>}
           </div>
           <p className="text-md md:text-lg mt-1 max-w-lg">
@@ -25,7 +26,7 @@ export default async function Home() {
           </p>
           <div className="mt-4 w-full">
             {isAuth ? (
-              <h1></h1>
+              <FileUpload />
             ) : (
               <Link href="/sign-in">
                 <Button>
