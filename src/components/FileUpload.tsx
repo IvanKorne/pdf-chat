@@ -5,6 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { Inbox, Loader2 } from "lucide-react";
 import { uploadToS3 } from "@/lib/s3";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -15,6 +16,8 @@ type MutateProps = {
 
 const FileUpload = () => {
   const [uploading, setUploading] = useState(false);
+  const router = useRouter();
+
   const { mutate, isPending } = useMutation({
     mutationFn: async ({ file_key, file_name }: MutateProps) => {
       const response = await axios.post("/api/create-chat", {
@@ -42,12 +45,13 @@ const FileUpload = () => {
           return toast.error("Something went wrong");
         }
         mutate(data, {
-          onSuccess: (data) => {
-            console.log(data);
-            toast.success(data.message);
+          onSuccess: ({ chat_id }) => {
+            toast.success("Chat Created!");
+            router.push(`/chat/${chat_id}`);
           },
           onError: (err) => {
             toast.error("Error creating chat");
+            console.log(err);
           },
         });
       } catch (err) {
