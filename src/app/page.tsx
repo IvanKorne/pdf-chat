@@ -1,12 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { UserButton, auth } from "@clerk/nextjs";
 import Link from "next/link";
-import { LogIn } from "lucide-react";
+import { ArrowRight, LogIn } from "lucide-react";
 import FileUpload from "@/components/FileUpload";
+import { checkSubscription } from "@/lib/subscription";
+import SubscriptionButton from "@/components/SubButton";
+import { db } from "@/lib/db";
+import { chats } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export default async function Home() {
   const { userId } = await auth();
   const isAuth = !!userId;
+  const checkPro = await checkSubscription();
+  let firstChat: any;
+  if (userId) {
+    firstChat = await db.select().from(chats).where(eq(chats.userId, userId));
+    if (firstChat) {
+      firstChat = firstChat[0];
+    }
+  }
+
   return (
     <main className="w-full min-h-screen bg-gradient-to-r from-indigo-100 via-red-100 to-yellow-100">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -18,7 +32,16 @@ export default async function Home() {
             <UserButton afterSignOutUrl="/" />
           </div>
           <div className="flex mt-5">
-            {isAuth && <Button>Start Now</Button>}
+            {isAuth && firstChat && (
+              <Link href={`/chat/${firstChat.id}`}>
+                <Button>
+                  Start Now <ArrowRight className="ml-1" />
+                </Button>
+              </Link>
+            )}
+            <div className="ml-3">
+              <SubscriptionButton isPro={checkPro} />
+            </div>
           </div>
           <p className="text-md md:text-lg mt-1 max-w-lg">
             Join millions of professionals, researchers, and students in using
