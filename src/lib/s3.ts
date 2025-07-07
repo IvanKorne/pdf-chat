@@ -27,17 +27,10 @@ export const uploadToS3 = async (file: File) => {
     // Progress bar
     const upload = s3
       .putObject(params)
-      .on("httpUploadProgress", (evt) => {
-        console.log(
-          "uploading to s3",
-          parseInt(((evt.loaded * 100) / evt.total).toString())
-        );
-      })
+      .on("httpUploadProgress", (evt) => {})
       .promise();
 
-    await upload.then((data) => {
-      console.log("Successfuly uploaded to S3!", file_key);
-    });
+    await upload.then((data) => {});
 
     return Promise.resolve({
       file_key,

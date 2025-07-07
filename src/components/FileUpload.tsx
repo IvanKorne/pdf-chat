@@ -32,7 +32,6 @@ const FileUpload = () => {
     accept: { "application/pdf": [".pdf"] },
     maxFiles: 1,
     onDrop: async (acceptedFiles) => {
-      console.log(acceptedFiles);
       const file = acceptedFiles[0];
       // If file is bigger than 10mb (max for s3)
       if (file.size > 10 * 1024 * 1024) {
